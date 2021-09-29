@@ -186,3 +186,61 @@ millis()的变体为：
 ## 6.总结 ##
 
 以上即为本次移植的过程，有需要的朋友可以直接使用我的代码，亦可使用ardunio代码自行移植。
+
+Test method
+- download PC execute file
+Windows_emModbus_Demo.zip file download url:
+https://www.segger.com/downloads/emmodbus#emmodbus_demo
+
+- build file
+The builded file is "Start_Modbus_Slave.exe".
+This is builded by Visual Studio 2010 Professional tool.
+
+- test example
+Start_Modbus_Slave.exe
+Enter interface type (1:TCP|2:RTU|3:ASCII) [TCP]: 2
+Enter COM port to use (dec.) [COM1]: 4
+Enter Baud rate to use (dec.) [38400]: 115200
+Enter the number of data bits (dec. 4 - 8) [8]:
+Enter the parity (0:None|1:Odd|2:Even|3:Mark|4:Space) [None]:
+Enter the number of stop bits (0:One|1:One and half|2:Two) [One]:
+Enter slave address (dec.) [1]: 1
+Enter base address of registers (dec.) [1000]: 2
+
+- console result monitor
+.-----------------------.
+|Addr./ |       |       |
+|Func.  |     2 |     3 |
+|-----------------------|
+|Coils  |  [ ]  |  [ ]  |
+|-----------------------|
+|DI     |  [ ]  |  [ ]  |
+|-----------------------|an
+|Reg    |     0 |     0 |
+|-----------------------|
+|IR     |     5 |     5 |
+`-----------------------'
+Press any key to close.
+
+- uart result
+-> 01 04 00 02 00 02 D0 0B 
+<- 01 04 04 00 30 00 30 FB 9F
+
+- uart analysis
+-> 01 04 [00 02] [00 02] [D0 0B] 
+    |  |    |       |       |
+    |  |    |       |       |_CRC
+    |  |    |       |_ReadQty
+    |  |    |_ReadAddress
+    |  |_Modbus function 0x04 Read Input Registers
+    |_slave address
+
+<- 01 04 04 [00 30] [00 30] [FB 9F]
+    |  |  |    |       |       |
+    |  |  |    |       |       |_CRC
+    |  |  |    |       |_16 bits per register
+    |  |  |    |_Register values (16 bits per register)
+    |  |  |_Number of bytes of register values to follow (8-bit)
+    |  |_Modbus function 0x04 Read Input Registers
+    |_slave address
+Function code 4 (read input registers)

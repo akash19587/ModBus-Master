@@ -100,8 +100,8 @@ int main(void)
   while (1)
   {
     uint8_t result;
-    //测试Read Input Registers功能  
-    //从机地址0x01 ,寄存器地�? 0x02 ,连续�?2个寄存器地址
+    //测试Read Input Registers功能 
+    //从机地址0x01 ,寄存器地址 0x02 ,连续读2个寄存器地址
     result = ModbusMaster_readInputRegisters(0x01,0x2, 2);
     if (result == 0x00)
     {
